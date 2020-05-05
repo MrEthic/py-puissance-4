@@ -1,0 +1,2 @@
+# A simple "puissance game" in python
+## Just to get my hand back on python
