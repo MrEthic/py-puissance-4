@@ -1,10 +1,13 @@
 class Player:
 
-    def __init__(self, name: str, symbol: str = "X"):
+    def __init__(self, name: str, symbol: str = 'X'):
         self.name = name
         self.symbol = symbol
 
-
+class IA(Player):
+    
+    def __init__(self, name: str = "IA", symbol: str ='O'):
+        super().__init__(name, symbol=symbol)
 
 
 class Board:
@@ -32,6 +35,8 @@ class Board:
     def __setitem__(self, key, value):
         raise TypeError("'Board' object does not support item assignment, if you want to assign a value at a position (x, y) use : B[x][y] = ?")
 
+    def __copy__(self):
+        return Board(self.size[0], self.size[1], self.emptyChar)
 
     def creatEmptyBoard(self, n: int = 6, m: int = 7) -> list :
         B = [[self.emptyChar for _ in range(n)] for _ in range(m)]
@@ -54,12 +59,12 @@ class Board:
 
         # Check colone
         count = 1
-        for i in range(y-1, -1, -1):
-            if self[x][i] != symbol:
+        for i in range(1, self.size[0]-y, 1):
+            if self[x][y+i] != symbol:
                 break 
             count +=1
-        for i in range(y+1, self.size[0], 1):
-            if self[x][i] != symbol:
+        for i in range(1, y+1, 1):
+            if self[x][y-i] != symbol:
                 break 
             count +=1
         if count >= 4 :
@@ -67,12 +72,12 @@ class Board:
 
         # Check ligne
         count = 1
-        for i in range(x-1, -1 -1):
-            if self[i][y] != symbol:
+        for i in range(1, self.size[1]-x, 1):
+            if self[x+i][y] != symbol:
                 break
             count += 1
-        for i in range(x+1, self.size[1], 1):
-            if self[i][y] != symbol:
+        for i in range(1, x+1, 1):
+            if self[x-i][y] != symbol:
                 break
             count += 1
         if count >= 4 :
@@ -146,6 +151,18 @@ class Game:
             return
         self.activePlayer = self.p1 if self.activePlayer == self.p2 else self.p2
         self.playRound()
+
+    #p1 -> max
+    #p2 -> min
+    def minimax(self, board, lastPos, player: player):
+        val = board.checkAt(lastPos)
+        if player == self.p1: #maximizing
+            value = 0 #float("-inf")
+            for i in range(board.size[1]):
+                playPos = board.playAtAs(i, player)
+                if(playPos != None):
+                    nv = 1 if board.checkAt(playPos) else 0
+
 
     
 
